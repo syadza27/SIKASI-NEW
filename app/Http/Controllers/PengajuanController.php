@@ -165,39 +165,70 @@ $pengajuan->save();
 if($pengajuan->kategori_id == 1){
 $phpWord = new \PhpOffice\PhpWord\PhpWord();
 $section = $phpWord->addSection();
-$text = $section->addText('
+// $text = $section->addText('
 
 
-DRAFT
+// DRAFT
 
 
-PERJANJIAN KERJA SAMA
-ANTARA
-…………………………………………………..
-DENGAN
-FAKULTAS/ LEMBAGA ………………………………
-UNIVERSITAS SEBELAS MARET
+// PERJANJIAN KERJA SAMA
+// ANTARA
+// …………………………………………………..
+// DENGAN
+// FAKULTAS/ LEMBAGA ………………………………
+// UNIVERSITAS SEBELAS MARET
 
-Nomor: ……/UN27……/KS/2021
-Nomor: ……………………… /2021
+// Nomor: ……/UN27……/KS/2021
+// Nomor: ……………………… /2021
 
-TENTANG
-…………………………………………………….
-………………………………….………………..
-
-
-Pada hari ini, ………… tanggal …………… bulan ………… tahun …………………………, kami yang bertanda tangan dibawah ini:
-I. ……………………………… : Dekan Fakultas ............./ Ketua ....………../ Kepala ……………/ Direktur ………… Universitas Sebelas Maret,
-dalam hal ini bertindak untuk dan atas nama Fakultas/ Lembaga/ Unit, yang berkedudukan di Jl. Ir. Sutami 36A, Kentingan
-Surakarta, Jawa Tengah, selanjutnya disebut PIHAK KESATU.
-1I. ……………………………… : …………………………….., yang diangkat berdasarkan ………… Nomor ……… tanggal …….. tentang …………., dalam hal ini
-bertindak untuk dan atas nama ……………………, yang berkedudukan di ……………, selanjutnya disebut PIHAK KEDUA;
+// TENTANG
+// …………………………………………………….
+// ………………………………….………………..
 
 
-PIHAK KESATU dan PIHAK KEDUA secara sendiri-sendiri disebut PIHAK, dan secara bersama-sama selanjutnya disebut sebagai
-PARA PIHAK.
+// Pada hari ini, ………… tanggal …………… bulan ………… tahun …………………………, kami yang bertanda tangan dibawah ini:
+// I. ……………………………… : Dekan Fakultas ............./ Ketua ....………../ Kepala ……………/ Direktur ………… Universitas Sebelas Maret,
+// dalam hal ini bertindak untuk dan atas nama Fakultas/ Lembaga/ Unit, yang berkedudukan di Jl. Ir. Sutami 36A, Kentingan
+// Surakarta, Jawa Tengah, selanjutnya disebut PIHAK KESATU.
+// 1I. ……………………………… : …………………………….., yang diangkat berdasarkan ………… Nomor ……… tanggal …….. tentang …………., dalam hal ini
+// bertindak untuk dan atas nama ……………………, yang berkedudukan di ……………, selanjutnya disebut PIHAK KEDUA;
 
-');
+
+// PIHAK KESATU dan PIHAK KEDUA secara sendiri-sendiri disebut PIHAK, dan secara bersama-sama selanjutnya disebut sebagai
+// PARA PIHAK.
+
+// ');
+
+
+$startDateParsed = \Carbon\Carbon::parse($pengajuan->tanggalmulai);
+$startDateParsedFormatted = $startDateParsed->format('d-m-Y');
+$endDateParsed = \Carbon\Carbon::parse($pengajuan->tanggalakhir);
+
+$section->addText('DRAFT', array('bold' => true, 'size' => 18), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('PERJANJIAN KERJA SAMA', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText($mitra->namamitra, array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('DENGAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('FAKULTAS / LEMBAGA ............................', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('UNIVERSITAS SEBELAS MARET', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Nomor:....../UN27....../KS/2021', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('Nomor:..................../2021', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('............................................', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('............................................', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Pada hari ini, ............. tanggal .......... bulan ........... tahun ................, ' . $startDateParsedFormatted . ' kami yang bertanda tangan dibawah ini:', array('size' => 11), array("align" => "thaiDistribute"));
+
+$pageOneMixedStyle = $section->createTextRun();
+$pageOneMixedStyle->addText('PIHAK KESATU',array('bold' => true, 'size' => 11), array("align" => "thaiDistribute"));
+$pageOneMixedStyle->addText(' dan ');
+$pageOneMixedStyle->addText('PIHAK KEDUA ',array('bold' => true, 'size' => 11));
+$pageOneMixedStyle->addText('secara sendiri-sendiri disebut', array('size' => 11), array("align" => "thaiDistribute"));
+$pageOneMixedStyle->addText(' PIHAK ',array('bold' => true, 'size' => 11));
+$pageOneMixedStyle->addText(', dan secara bersama-sama selanjutnya disebut sebagai', array('size' => 11), array("align" => "thaiDistribute"));
+$pageOneMixedStyle->addText(' PARA PIHAK ',array('bold' => true, 'size' => 11));
+
 $section = $phpWord->addSection();
 $text = $section->addText('
 PARA PIHAK secara bersama setuju dan bersepakat untuk membuat Perjanjian Kerja Sama Kerjasama tentang

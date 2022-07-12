@@ -42,8 +42,8 @@ class ProfileController extends Controller
           // $profil = User::where('id', Auth::user()->id)->first();
           return view('admin\Profile\editprofile' , compact('prodi' , 'profil'));
           }
-  
-  
+
+
     public function insertprofile(Request $request)
     {
         // $user = User::where('id', Auth::user()->id);
@@ -70,10 +70,10 @@ class ProfileController extends Controller
         $user->nomorhp = $request->nomorhp;
         // $user->prodi_id = $request->prodi_id;
         $user->alamat = $request->alamat;
-        $user->photo = $txt;
+        // $user->photo = $txt;
         $user->save();
-       
-      
+
+
         return back()->with('toast_success', 'Data Berhasil Tersimpan');
 
 
