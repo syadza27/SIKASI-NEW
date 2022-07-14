@@ -157,9 +157,15 @@ $pengajuan->tanggalmulai = $request->tanggalmulai;
 $pengajuan->tanggalakhir = $request->tanggalakhir;
 // $pengajuan->dokumen = $dokumen_file;
 
-$pengajuan->save();
 
+$relatedMajor = array();
+foreach ($dataa2 as $majorId) {
+    $major = Prodi::where('id', '=', $majorId)->first();
 
+    array_push($relatedMajor, $major);
+}
+
+$alphabetIndex = range('a', 'z');
 
 //Generate Dokumen
 if($pengajuan->kategori_id == 1){
@@ -229,164 +235,338 @@ $pageOneMixedStyle->addText(' PIHAK ',array('bold' => true, 'size' => 11));
 $pageOneMixedStyle->addText(', dan secara bersama-sama selanjutnya disebut sebagai', array('size' => 11), array("align" => "thaiDistribute"));
 $pageOneMixedStyle->addText(' PARA PIHAK ',array('bold' => true, 'size' => 11));
 
-$section = $phpWord->addSection();
-$text = $section->addText('
-PARA PIHAK secara bersama setuju dan bersepakat untuk membuat Perjanjian Kerja Sama Kerjasama tentang
-”…………………………………………………………………………”, dengan ketentuan dan syarat sebagai berikut:
 
-Pasal 1
-UMUM
+$section->addTextBreak();
 
-(1) Perjanjian Kerja Sama kerjasama ini dilaksanakan dalam rangka “………………………………….”, maka PARA PIHAK akan saling
-membantu, melakukan dan/atau menyediakan hal-hal yang diperlukan untuk tercapainya tujuan pelaksanaan kerjasama.
-(2) Perjanjian Kerja Sama ini didasarkan pada Nota Kesepahaman/ Kesepakatan Bersama antara Universitas Sebelas Maret
+$section->addText('PARA PIHAK secara bersama setuju dan bersepakat untuk membuat Perjanjian Kerja Sama Kerjasama tentang
+”…………………………………………………………………………”, dengan ketentuan dan syarat sebagai berikut:', array('size' => 11), array("align" => "thaiDistribute"));
+
+$section->addTextBreak();
+$section->addText('Pasal 1', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('UMUM', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Perjanjian Kerja Sama kerjasama ini dilaksanakan dalam rangka “………………………………….”, maka PARA PIHAK akan saling
+membantu, melakukan dan/atau menyediakan hal-hal yang diperlukan untuk tercapainya tujuan pelaksanaan kerjasama.', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(2) Perjanjian Kerja Sama ini didasarkan pada Nota Kesepahaman/ Kesepakatan Bersama antara Universitas Sebelas Maret
 dengan ...................................... Nomor: ......................... dan Nomor: ..............................
-Tanggal ..................... tentang .............................. .
-(3) …………………. .
-(4) …………………. .
+Tanggal ..................... tentang .............................. .', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(3) …………………. .', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(4) …………………. .', array('size' => 11), array("align" => "thaiDistribute"));
 
-Pasal 2
-MAKSUD DAN TUJUAN
 
-(1) Maksud Perjanjian Kerja Sama Kerja Sama ini adalah untuk ………………………………………. .
-(2) Tujuan Perjanjian Kerja Sama kerja Sama ini adalah ………………………………………………
+$section->addTextBreak();
+$section->addText('Pasal 2', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('MAKSUD DAN TUJUAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Maksud Perjanjian Kerja Sama Kerja Sama ini adalah untuk ………………………………………. .', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(2) Tujuan Perjanjian Kerja Sama kerja Sama ini adalah ………………………………………………', array('size' => 11), array("align" => "thaiDistribute"));
 
-Pasal 3
-LOKASI KEGIATAN
-(optional bisa ada bisa tidak)
+$section->addTextBreak();
+$section->addText('Pasal 3', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('LOKASI DAN KEGIATAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('(optional bisa ada bisa tidak)', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Lokasi Kegiatan di dalam Perjanjian Kerja Sama Kerja Sama ini berada di …………………………………….', array('size' => 11), array("align" => "thaiDistribute"));
 
-Lokasi Kegiatan di dalam Perjanjian Kerja Sama Kerja Sama ini berada di …………………………………….
+$section->addTextBreak();
+$section->addText('Pasal 4', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('RUANG LINGKUP', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Ruang Lingkup Perjanjian Kerja Sama Kerja Sama ini adalah :', array('size' => 11), array("align" => "left"));
 
-Pasal 4
-RUANG LINGKUP
+for ($i=0; $i < count($relatedMajor) ; $i++) {
+    $section->addText($alphabetIndex[$i] .  ') ' . $relatedMajor[$i]->namaprodi, array('size' => 11), array("align" => "left"));
+}
 
-(1) Ruang Lingkup Perjanjian Kerja Sama Kerja Sama ini adalah :
-a) …………….. (SEBUTKAN NAMA PRODI YANG TERLIBAT)
-b) …………….., dst.
-(2) Detail lingkup pekerjaan yang dilaksanakan adalah sebagai berikut:
-a) ……………..
-b) …………….., dst.
-');
+$section->addText('(2) Detail lingkup pekerjaan yang dilaksanakan adalah sebagai berikut:', array('size' => 11), array("align" => "left"));
+$section->addText('a) ……………..', array('size' => 11), array("align" => "left"));
+$section->addText('b) ……………..', array('size' => 11), array("align" => "left"));
 
-$section = $phpWord->addSection();
-$text = $section->addText('
-Pasal 5
-HAK DAN KEWAJIBAN
 
-(1) Hak PIHAK KESATU:
-a) ……………….
-b) ………………., dst.
-(2) Kewajiban PIHAK KESATU:
-a) ……………….
-b) ………………., dst.
-(3) Hak PIHAK KEDUA:
-a) ……………….
-b) ………………., dst.
-(4) Kewajiban PIHAK KEDUA:
-a) ……………….
-b) ………………., dst.
+$section->addTextBreak();
+$section->addText('Pasal 5', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('HAK DAN KEWAJIBAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Hak PIHAK KESATU', array('size' => 11), array("align" => "left"));
+$section->addText('a) ……………..', array('size' => 11), array("align" => "left"));
+$section->addText('b) …………….., dst', array('size' => 11), array("align" => "left"));
+$section->addText('(2) Kewajiban PIHAK KESATU', array('size' => 11), array("align" => "left"));
+$section->addText('a) ……………..', array('size' => 11), array("align" => "left"));
+$section->addText('b) …………….., dst', array('size' => 11), array("align" => "left"));
+$section->addText('(3) Hak PIHAK KEDUA', array('size' => 11), array("align" => "left"));
+$section->addText('a) ……………..', array('size' => 11), array("align" => "left"));
+$section->addText('b) …………….., dst', array('size' => 11), array("align" => "left"));
+$section->addText('(4) Kewajiban PIHAK KEDUA', array('size' => 11), array("align" => "left"));
+$section->addText('a) ……………..', array('size' => 11), array("align" => "left"));
+$section->addText('b) …………….., dst', array('size' => 11), array("align" => "left"));
 
-Pasal 6
-PEMBIAYAAN
+$section->addTextBreak();
+$section->addText('Pasal 6', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('PEMBIAYAAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Biaya yang timbul dari Perjanjian Kerja Sama ini ditanggung oleh PARA PIHAK dengan pembebanan sebagai berikut:', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('1. Beban PIHAK KESATU ………………………..', array('size' => 11), array("align" => "left"));
+$section->addText('2. Beban PIHAK KEDUA ………………………….', array('size' => 11), array("align" => "left"));
+$section->addText('3. Prosedur pembayaran', array('size' => 11), array("align" => "left"));
+$section->addText('a. Biaya yang menjadi beban PIHAK KESATU sebagaimana dimaksud dalam Pasal 6 ayat (1) huruf a, dibayarkan kepada PIHAK
+KEDUA sesuai jadwal pelaksanaan dan diatur sebagai berikut:', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('1) …………………..', array('size' => 11), array("align" => "left"));
+$section->addText('2) ………………….., dst', array('size' => 11), array("align" => "left"));
+$section->addText('b. Pembayaran oleh PIHAK KESATU dilakukan secara transfer bank ke rekening PIHAK KEDUA sebagai berikut:', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('Nama Bank : ………………………………', array('size' => 11), array("align" => "left"));
+$section->addText('Nomor Rekening : ………………………………', array('size' => 11), array("align" => "left"));
+$section->addText('Nama Rekening : …………………………………', array('size' => 11), array("align" => "left"));
+$section->addText('Nomor Virtual Account : …………………………………………', array('size' => 11), array("align" => "left"));
 
-Biaya yang timbul dari Perjanjian Kerja Sama ini ditanggung oleh PARA PIHAK dengan pembebanan sebagai berikut:
-1. Beban PIHAK KESATU ………………………..
-2. Beban PIHAK KEDUA ………………………….
-3. Prosedur pembayaran
-a. Biaya yang menjadi beban PIHAK KESATU sebagaimana dimaksud dalam Pasal 6 ayat (1) huruf a, dibayarkan kepada PIHAK
-KEDUA sesuai jadwal pelaksanaan dan diatur sebagai berikut:
-1) …………………..
-2) ………………….., dst
-b. Pembayaran oleh PIHAK KESATU dilakukan secara transfer bank ke rekening PIHAK KEDUA sebagai berikut:
-Nama Bank : ………………………………
-Nomor Rekening : ………………………………
-Nama Rekening : …………………………………
-Nomor Virtual Account : …………………………………………
-');
-
-$section = $phpWord->addSection();
-$text = $section->addText('
-Pasal 7
-KEWAJIBAN INSTITUTIONAL FEE
-
-(pasal ini harus ada untuk pks yang mendatangkan revenue generating bagi UNS dari pihak mitra kecuali untuk beasiswa,
-hibah penelitian, hibah pemerintah untuk operasional)
-
-Sesuai dengan Peraturan Rektor Universitas Sebelas Maret Nomor 1 Tahun 2019 tentang Pedoman Kerjasama Universitas
+$section->addTextBreak();
+$section->addText('Pasal 7', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('KEWAJIBAN INSTITUTIONAL FEE', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Sesuai dengan Peraturan Rektor Universitas Sebelas Maret Nomor 1 Tahun 2019 tentang Pedoman Kerjasama Universitas
 Sebelas Maret maka Pendapatan dari Kewajiban hasil kerjasama sebesar 6% dari total nilai kontrak disetorkan ke rekening
-operasional Universitas Sebelas Maret.
+operasional Universitas Sebelas Maret.', array('size' => 11), array("align" => "thaiDistribute"));
 
-Pasal 8
-JANGKA WAKTU
-
-(1) Perjanjian Kerja Sama ini berlaku selama …….. ( …….. ) tahun terhitung sejak tanggal ditandatanganinya.
-(2) Apabila salah satu pihak akan memperpanjang atau memperpendek masa berlakunya Perjanjian Kerja Sama ini, maka pihak
+$section->addTextBreak();
+$section->addText('Pasal 8', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('JANGKA WAKTU', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Perjanjian Kerja Sama ini berlaku selama …….. ( …….. ) tahun terhitung sejak tanggal ditandatanganinya.', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(2) Apabila salah satu pihak akan memperpanjang atau memperpendek masa berlakunya Perjanjian Kerja Sama ini, maka pihak
 yang berkeinginan memperpanjang atau memperpendek masa berlakunya harus mengajukan secara tertulis kepada pihak lain
-paling lambat 7 (tujuh) hari kalender sebelum berakhirnya Perjanjian Kerja Sama ini.
-(3) Dengan berakhirnya jangka waktu pelaksanaan sebagaimana dimaksud pada ayat (1) dan tidak dilakukan perubahan atas
+paling lambat 7 (tujuh) hari kalender sebelum berakhirnya Perjanjian Kerja Sama ini.', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(3) Dengan berakhirnya jangka waktu pelaksanaan sebagaimana dimaksud pada ayat (1) dan tidak dilakukan perubahan atas
 jangka waktu tersebut maka Perjanjian Kerja Sama kerjasama ini berakhir dengan sendirinya dan PARA PIHAK tidak terikat
-atas hak dan kewajiban yang tertuang dalam Perjanjian Kerja Sama kerjasama ini.
+atas hak dan kewajiban yang tertuang dalam Perjanjian Kerja Sama kerjasama ini.', array('size' => 11), array("align" => "thaiDistribute"));
 
-Pasal 9
-KORESPONDENSI
 
-Setiap pemberitahuan dan/atau surat-menyurat akan dialamatkan sebagai berikut:
-PIHAK KESATU :
-UNIVERSITAS SEBELAS MARET
-U.p : ………………………………………………..
-Alamat : Universitas Universitas Sebelas Maret
-Jl. Sutami No. 36 A, Kentingan, Surakarta 57126
-Telepon : (0271) 646994 Ext. …………..
-Email : …………………..
-PIHAK KEDUA:
-');
+$section->addTextBreak();
+$section->addText('Pasal 9', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('KORESPONDENSI', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Setiap pemberitahuan dan/atau surat-menyurat akan dialamatkan sebagai berikut:', array('size' => 11), array("align" => "left"));
+$section->addText('PIHAK KESATU :', array('size' => 11), array("align" => "left"));
+$section->addText('UNIVERSITAS SEBELAS MARET', array('size' => 11), array("align" => "left"));
+$section->addText('U.p : ………………………………………………..', array('size' => 11), array("align" => "left"));
+$section->addText('Alamat : Universitas Universitas Sebelas Maret, Jl. Sutami No. 36 A, Kentingan, Surakarta 57126', array('size' => 11), array("align" => "left"));
+$section->addText('Telepon : (0271) 646994 Ext. …………..', array('size' => 11), array("align" => "left"));
+$section->addText('Email : …………………..', array('size' => 11), array("align" => "left"));
+$section->addText('PIHAK KEDUA:', array('size' => 11), array("align" => "left"));
+$section->addText('.............................', array('size' => 11), array("align" => "left"));
+$section->addText('U.p : ' . $mitra->namamitra, array('size' => 11), array("align" => "left"));
+$section->addText('Alamat : ' . $mitra->alamat, array('size' => 11), array("align" => "left"));
+$section->addText('Telepon : ' . $mitra->email, array('size' => 11), array("align" => "left"));
+$section->addText('Email : ' . $mitra->no_hp, array('size' => 11), array("align" => "left"));
 
-$section = $phpWord->addSection();
-$text = $section->addText('
 
-………………………………………………
-U.p. : ……………………………………………….
-Alamat : ……………………………………………….
-Telepon : …………………..
-Email : …………………..
+$section->addTextBreak();
+$section->addText('Pasal 10', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('PENYELESAIAN PERSELISIHAN', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('(1) Apabila dalam pelaksanaan kerjasama terjadi perbedaan, maka yang dipakai sebagai acuan adalah ketentuan-ketentuan
+yang tercantum dalam Perjanjian Kerja Sama ini;', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(2) Apabila timbul perselisihan akibat Perjanjian Kerja Sama ini, maka PARA PIHAK akan menyelesaikan perselisihan
+tersebut secara musyawarah untuk mencapai mufakat.', array('size' => 11), array("align" => "thaiDistribute"));
+$section->addText('(3) Apabila penyelesaian perselisihan secara musyawarah untuk mufakat tidak berhasil, maka PARA PIHAK sepakat untuk
+menyelesaikan melalui Pengadilan Negeri Surakarta.', array('size' => 11), array("align" => "thaiDistribute"));
 
-Pasal 10
-PENYELESAIAN PERSELISIHAN
-
-(1) Apabila dalam pelaksanaan kerjasama terjadi perbedaan, maka yang dipakai sebagai acuan adalah ketentuan-ketentuan
-yang tercantum dalam Perjanjian Kerja Sama ini;
-(2) Apabila timbul perselisihan akibat Perjanjian Kerja Sama ini, maka PARA PIHAK akan menyelesaikan perselisihan
-tersebut secara musyawarah untuk mencapai mufakat.
-(3) Apabila penyelesaian perselisihan secara musyawarah untuk mufakat tidak berhasil, maka PARA PIHAK sepakat untuk
-menyelesaikan melalui Pengadilan Negeri Surakarta.
-
-Pasal 11
-PENUTUP
-
-Perjanjian Kerja Sama ini dibuat di ......................, pada hari dan tanggal sebagaimana dimaksud di atas, dalam
+$section->addTextBreak();
+$section->addText('Pasal 11', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addText('PENUTUP', array('bold' => true, 'size' => 11), array("align" => "center"));
+$section->addTextBreak();
+$section->addText('Perjanjian Kerja Sama ini dibuat di ......................, pada hari dan tanggal sebagaimana dimaksud di atas, dalam
 rangkap 2 (dua) bermeterai cukup, masing-masing mempunyai kekuatan hukum yang sama, dan diserahkan kepada masing-masing
-pihak untuk digunakan sebagai dasar dan pedoman dalam pelaksanaan kerjasama.
-
-PIHAK KESATU
+pihak untuk digunakan sebagai dasar dan pedoman dalam pelaksanaan kerjasama.', array('size' => 11), array("align" => "thaiDistribute"));
 
 
 
-……………………………………….. PIHAK KEDUA
+$section->addTextBreak();
+$table = $section->addTable();
+
+$table->addRow();
+$table->addCell(5000)->addText('PIHAK KESATU', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addCell(5000)->addText('PIHAK KEDUA', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addRow();
+$table->addCell(5000)->addTextBreak();
+$table->addCell(5000)->addTextBreak();
+$table->addRow();
+$table->addCell(5000)->addTextBreak();
+$table->addCell(5000)->addTextBreak();
+$table->addRow();
+$table->addCell(5000)->addText('Mengetahui', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addCell(5000)->addText('', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addRow();
+$table->addCell(5000)->addText('Wakil Rektor Perencanaan, Kerjasama, Bisnis, dan Informasi ', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addCell(5000)->addText($mitra->jabatanpenandatangan, array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addRow();
+$table->addCell(5000)->addText('Universitas Sebelas Maret', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addCell(5000)->addText($mitra->namamitra, array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addRow();
+$table->addCell(5000)->addTextBreak();
+$table->addCell(5000)->addTextBreak();
+$table->addRow();
+$table->addCell(5000)->addTextBreak();
+$table->addCell(5000)->addTextBreak();
+$table->addRow();
+$table->addCell(5000)->addText('Prof. Dr. rer.nat. Sajidan, M.Si.', array('bold' => true, 'size' => 11), array("align" => "center"));
+$table->addCell(5000)->addText($mitra->namapenandatangan, array('bold' => true, 'size' => 11), array("align" => "center"));
+
+// $text = $section->addText('
+// PARA PIHAK secara bersama setuju dan bersepakat untuk membuat Perjanjian Kerja Sama Kerjasama tentang
+// ”…………………………………………………………………………”, dengan ketentuan dan syarat sebagai berikut:
+
+// Pasal 1
+// UMUM
+
+// (1) Perjanjian Kerja Sama kerjasama ini dilaksanakan dalam rangka “………………………………….”, maka PARA PIHAK akan saling
+// membantu, melakukan dan/atau menyediakan hal-hal yang diperlukan untuk tercapainya tujuan pelaksanaan kerjasama.
+// (2) Perjanjian Kerja Sama ini didasarkan pada Nota Kesepahaman/ Kesepakatan Bersama antara Universitas Sebelas Maret
+// dengan ...................................... Nomor: ......................... dan Nomor: ..............................
+// Tanggal ..................... tentang .............................. .
+// (3) …………………. .
+// (4) …………………. .
+
+// Pasal 2
+// MAKSUD DAN TUJUAN
+
+// (1) Maksud Perjanjian Kerja Sama Kerja Sama ini adalah untuk ………………………………………. .
+// (2) Tujuan Perjanjian Kerja Sama kerja Sama ini adalah ………………………………………………
+
+// Pasal 3
+// LOKASI KEGIATAN
+// (optional bisa ada bisa tidak)
+
+// Lokasi Kegiatan di dalam Perjanjian Kerja Sama Kerja Sama ini berada di …………………………………….
+
+// Pasal 4
+// RUANG LINGKUP
+
+// (1) Ruang Lingkup Perjanjian Kerja Sama Kerja Sama ini adalah :
+// a) …………….. (SEBUTKAN NAMA PRODI YANG TERLIBAT)
+// b) …………….., dst.
+// (2) Detail lingkup pekerjaan yang dilaksanakan adalah sebagai berikut:
+// a) ……………..
+// b) …………….., dst.
+// ');
+
+// $section = $phpWord->addSection();
+// $text = $section->addText('
+// Pasal 5
+// HAK DAN KEWAJIBAN
+
+// (1) Hak PIHAK KESATU:
+// a) ……………….
+// b) ………………., dst.
+// (2) Kewajiban PIHAK KESATU:
+// a) ……………….
+// b) ………………., dst.
+// (3) Hak PIHAK KEDUA:
+// a) ……………….
+// b) ………………., dst.
+// (4) Kewajiban PIHAK KEDUA:
+// a) ……………….
+// b) ………………., dst.
+
+// Pasal 6
+// PEMBIAYAAN
+
+// Biaya yang timbul dari Perjanjian Kerja Sama ini ditanggung oleh PARA PIHAK dengan pembebanan sebagai berikut:
+// 1. Beban PIHAK KESATU ………………………..
+// 2. Beban PIHAK KEDUA ………………………….
+// 3. Prosedur pembayaran
+// a. Biaya yang menjadi beban PIHAK KESATU sebagaimana dimaksud dalam Pasal 6 ayat (1) huruf a, dibayarkan kepada PIHAK
+// KEDUA sesuai jadwal pelaksanaan dan diatur sebagai berikut:
+// 1) …………………..
+// 2) ………………….., dst
+// b. Pembayaran oleh PIHAK KESATU dilakukan secara transfer bank ke rekening PIHAK KEDUA sebagai berikut:
+// Nama Bank : ………………………………
+// Nomor Rekening : ………………………………
+// Nama Rekening : …………………………………
+// Nomor Virtual Account : …………………………………………
+// ');
+
+// $section = $phpWord->addSection();
+// $text = $section->addText('
+// Pasal 7
+// KEWAJIBAN INSTITUTIONAL FEE
+
+// (pasal ini harus ada untuk pks yang mendatangkan revenue generating bagi UNS dari pihak mitra kecuali untuk beasiswa,
+// hibah penelitian, hibah pemerintah untuk operasional)
+
+// Sesuai dengan Peraturan Rektor Universitas Sebelas Maret Nomor 1 Tahun 2019 tentang Pedoman Kerjasama Universitas
+// Sebelas Maret maka Pendapatan dari Kewajiban hasil kerjasama sebesar 6% dari total nilai kontrak disetorkan ke rekening
+// operasional Universitas Sebelas Maret.
+
+// Pasal 8
+// JANGKA WAKTU
+
+// (1) Perjanjian Kerja Sama ini berlaku selama …….. ( …….. ) tahun terhitung sejak tanggal ditandatanganinya.
+// (2) Apabila salah satu pihak akan memperpanjang atau memperpendek masa berlakunya Perjanjian Kerja Sama ini, maka pihak
+// yang berkeinginan memperpanjang atau memperpendek masa berlakunya harus mengajukan secara tertulis kepada pihak lain
+// paling lambat 7 (tujuh) hari kalender sebelum berakhirnya Perjanjian Kerja Sama ini.
+// (3) Dengan berakhirnya jangka waktu pelaksanaan sebagaimana dimaksud pada ayat (1) dan tidak dilakukan perubahan atas
+// jangka waktu tersebut maka Perjanjian Kerja Sama kerjasama ini berakhir dengan sendirinya dan PARA PIHAK tidak terikat
+// atas hak dan kewajiban yang tertuang dalam Perjanjian Kerja Sama kerjasama ini.
+
+// Pasal 9
+// KORESPONDENSI
+
+// Setiap pemberitahuan dan/atau surat-menyurat akan dialamatkan sebagai berikut:
+// PIHAK KESATU :
+// UNIVERSITAS SEBELAS MARET
+// U.p : ………………………………………………..
+// Alamat : Universitas Universitas Sebelas Maret
+// Jl. Sutami No. 36 A, Kentingan, Surakarta 57126
+// Telepon : (0271) 646994 Ext. …………..
+// Email : …………………..
+// PIHAK KEDUA:
+// ');
+
+// $section = $phpWord->addSection();
+// $text = $section->addText('
+
+// ………………………………………………
+// U.p. : ……………………………………………….
+// Alamat : ……………………………………………….
+// Telepon : …………………..
+// Email : …………………..
+
+// Pasal 10
+// PENYELESAIAN PERSELISIHAN
+
+// (1) Apabila dalam pelaksanaan kerjasama terjadi perbedaan, maka yang dipakai sebagai acuan adalah ketentuan-ketentuan
+// yang tercantum dalam Perjanjian Kerja Sama ini;
+// (2) Apabila timbul perselisihan akibat Perjanjian Kerja Sama ini, maka PARA PIHAK akan menyelesaikan perselisihan
+// tersebut secara musyawarah untuk mencapai mufakat.
+// (3) Apabila penyelesaian perselisihan secara musyawarah untuk mufakat tidak berhasil, maka PARA PIHAK sepakat untuk
+// menyelesaikan melalui Pengadilan Negeri Surakarta.
+
+// Pasal 11
+// PENUTUP
+
+// Perjanjian Kerja Sama ini dibuat di ......................, pada hari dan tanggal sebagaimana dimaksud di atas, dalam
+// rangkap 2 (dua) bermeterai cukup, masing-masing mempunyai kekuatan hukum yang sama, dan diserahkan kepada masing-masing
+// pihak untuk digunakan sebagai dasar dan pedoman dalam pelaksanaan kerjasama.
+
+// PIHAK KESATU
 
 
 
-……………………………………..
-Mengetahui
-Wakil Rektor Perencanaan, Kerjasama, Bisnis, dan Informasi
-Universitas Sebelas Maret
+// ……………………………………….. PIHAK KEDUA
 
 
-Prof. Dr. rer.nat. Sajidan, M.Si.
 
-');
+// ……………………………………..
+// Mengetahui
+// Wakil Rektor Perencanaan, Kerjasama, Bisnis, dan Informasi
+// Universitas Sebelas Maret
 
-$text = $section->addText($request->get('name'));
-$text = $section->addText($request->get('email'));
+
+// Prof. Dr. rer.nat. Sajidan, M.Si.
+
+// ');
+
+// $text = $section->addText($request->get('name'));
+// $text = $section->addText($request->get('email'));
 $text = $section->addText($request->get('number'),array('name'=>'Arial','size' => 20,'bold' => true));
 // $section->addImage("./images/Krunal.jpg");
 $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
